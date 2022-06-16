@@ -1,36 +1,33 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-const handler = (_req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    console.log({ _req });
+const API_URL_BASE = "http://localhost:3333";
 
-    const data = [
-      {
-        id: "123123123n",
-        type: "folder",
-        name: "Documents",
-        size: "1",
-        modified: "11/05/2022",
+const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { url } = _req;
+    console.log({ url });
+
+    const urlPath = url.replace("/api/files", "");
+    console.log({ urlPath });
+
+    const { data } = await fetch(`${API_URL_BASE}/files`, {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      {
-        id: "234",
-        type: "folder",
-        name: "balls",
-        size: "1",
-        modified: "11/05/2022",
-      },
-      {
-        id: "231234",
-        type: "file",
-        name: "secrets.text",
-        size: "1",
-        modified: "11/05/2022",
-      },
-    ];
+      body: JSON.stringify({
+        path: urlPath,
+      }),
+    })
+      .then((res) => res.json())
+      .catch((_err) => {
+        throw new Error("Faield to fetch data from API.");
+      });
 
     res.status(200).json(data);
   } catch (err: any) {
-    res.status(500).json({ statusCode: 500, message: err.message });
+    res.status(500);
   }
 };
 

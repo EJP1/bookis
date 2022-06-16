@@ -1,20 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { ToolBar } from "./toolBar";
 import { Table } from "./Table";
-import { RowData } from "./Table/index";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
-import { apiRoutes } from "../../lib/api";
 
 const FileExplorer = () => {
   const { asPath } = useRouter();
-
   const URL = `/api${asPath}`;
-  const { data, error } = useSWR(asPath, () =>
+
+  const { data, error } = useSWR(URL, () =>
     fetch(URL).then(async (res) => await res.json())
   );
-  console.log({ URL, asPath, data });
 
   if (!data) {
     return (
@@ -32,10 +29,12 @@ const FileExplorer = () => {
     );
   }
 
+  const { entries } = data;
+
   return (
     <div className="px-10 w-full">
       <ToolBar />
-      <Table data={data} />
+      <Table data={entries} />
     </div>
   );
 };
