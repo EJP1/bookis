@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { useSWRConfig } from "swr";
 import { useRouter } from "next/router";
-import { Folder, MoreHorizontal } from "react-feather";
+import { Folder, MoreHorizontal, ArrowDown } from "react-feather";
 import { RowData } from "./index";
 
 function notImplemented() {
@@ -11,10 +12,12 @@ function notImplemented() {
 
 const TableRow = ({ data }: { data: RowData }) => {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
   const [isHovering, setIsHovering] = useState(false);
   const [contextActive, setContextActive] = useState(false);
-
-  const { name, size, client_modified } = data;
+  const [contextHover, setContextHover] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { name, size, client_modified, path_lower } = data;
   const type = data[".tag"];
   const isFolder = type === "folder";
 
@@ -22,6 +25,22 @@ const TableRow = ({ data }: { data: RowData }) => {
     if (type === "folder") {
       router.push(`/files/${data.path_lower}`);
     }
+  }
+  console.log({ router });
+  async function handleDeleteClicked() {
+    const URL = `/api/files/${path_lower}`;
+
+    await mutate(URL, async () => {
+      await fetch(URL, {
+        method: "DELETE",
+        body: JSON.stringify({ path: path_lower }),
+      });
+    });
+    router.reload(window.location.pathname);
+  }
+
+  if (loading) {
+    return <span>Loading</span>;
   }
 
   return (
@@ -48,9 +67,16 @@ const TableRow = ({ data }: { data: RowData }) => {
       </td>
       <td>{size || "--"}</td>
       <td>{client_modified || "--"}</td>
-      <div className={`relative ${isHovering ? "" : "opacity-0"}`}>
+
+      <div
+        className={`relative ${
+          isHovering || contextActive || true ? "" : "opacity-0"
+        }`}
+      >
         <button
           className={`relative p-2 m-2 hover:bg-gray-200 `}
+          onMouseEnter={() => setContextHover(true)}
+          onMouseLeave={() => setContextHover(false)}
           onClick={() => setContextActive(!contextActive)}
         >
           <MoreHorizontal
@@ -59,6 +85,12 @@ const TableRow = ({ data }: { data: RowData }) => {
             stroke="black"
             fill="black"
           />
+
+          <ArrowDown
+            className={`absolute -top-3 animate-bounce transition-opacity ease-in duration-700 ${
+              contextHover ? "" : "opacity-0"
+            }`}
+          ></ArrowDown>
         </button>
 
         <ul
@@ -68,15 +100,7 @@ const TableRow = ({ data }: { data: RowData }) => {
         >
           <li>
             <button
-              onClick={() => {}}
-              className="w-full px-4 py-2 hover:bg-gray-100"
-            >
-              Remove
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => {}}
+              onClick={() => handleDeleteClicked()}
               className="w-full px-4 py-2 hover:bg-gray-100"
             >
               Delete

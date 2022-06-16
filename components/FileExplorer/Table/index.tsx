@@ -12,8 +12,8 @@ export interface RowData {
   path_lower: string;
 }
 export const Table = ({ data }: { data: RowData[] }) => {
-  console.log({ data });
-
+  
+  
   if (data.length === 0) {
     return (
       <div className="w-full flex justify-center font-bold">
@@ -29,7 +29,6 @@ export const Table = ({ data }: { data: RowData[] }) => {
         <th>Size</th>
         <th>Modified</th>
       </tr>
-
       {data.map((r) => (
         <TableRow key={r.id} data={r} />
       ))}
