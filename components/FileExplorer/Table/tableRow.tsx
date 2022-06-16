@@ -27,7 +27,7 @@ const TableRow = ({ data }: { data: RowData }) => {
       router.push(`/files/${data.path_lower}`);
     }
   }
-  console.log({ router });
+  
   async function handleDeleteClicked() {
     const URL = `/api/files/${path_lower}`;
 

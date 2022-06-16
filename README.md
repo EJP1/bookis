@@ -13,7 +13,11 @@ yarn dev
 
 This app will run on port 3000.
 
-This app is dependant on a server running locally on port 3333. Visit [this repo](https://github.com/EJP1/bookis-api) to clone and run in parallell.
+## Important
+
+This app is dependant on a server running locally on port 3333. Visit [this repo](https://github.com/EJP1/bookis-api) to clone and run in parallell. 
+
+__Please read the readme of this server before runnning this app.__
 
 ## Created with
 
