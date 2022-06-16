@@ -8,6 +8,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     const { url, method } = _req;
     const urlPath = url.replace("/api/files", "");
 
+    // We can do this simple switch method because there are only two methods..
     switch (method) {
       case "DELETE": {
         const { data } = await fetch(`${API_URL_BASE}/files`, {
@@ -25,7 +26,6 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
             throw new Error("Faield to fetch data from API.");
           });
 
-        console.log("DElete", { data });
         res.status(200).json(data);
       }
       default: {
