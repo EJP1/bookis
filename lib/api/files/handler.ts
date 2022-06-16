@@ -6,13 +6,10 @@ const API_URL_BASE = "http://localhost:3333";
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { url, method } = _req;
-    console.log({ url, method });
-
     const urlPath = url.replace("/api/files", "");
 
     switch (method) {
       case "DELETE": {
-        console.log("DELTE");
         const { data } = await fetch(`${API_URL_BASE}/files`, {
           method: "DELETE",
           headers: {

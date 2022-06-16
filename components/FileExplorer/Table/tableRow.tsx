@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useSWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { Folder, MoreHorizontal, ArrowDown } from "react-feather";
+import LoadingSpinner from "../../ui/LoadingSpinner";
 import { RowData } from "./index";
 
 function notImplemented() {
@@ -36,11 +37,12 @@ const TableRow = ({ data }: { data: RowData }) => {
         body: JSON.stringify({ path: path_lower }),
       });
     });
-    router.reload(window.location.pathname);
+    // TODO: Implement better revalidate data solution here....
+    router.reload();
   }
 
   if (loading) {
-    return <span>Loading</span>;
+    return <LoadingSpinner />;
   }
 
   return (
